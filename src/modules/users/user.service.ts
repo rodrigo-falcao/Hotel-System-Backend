@@ -3,6 +3,7 @@ import { PrismaService } from "../prisma/prisma.service";
 import { User } from "@prisma/client";
 import { CreateUserDTO } from "./domain/dto/createUser.dto";
 import { UpdateUserDTO } from "./domain/dto/updateUser.dto";
+import * as bcrypt from 'bcrypt';
 
 
 @Injectable()
@@ -13,9 +14,10 @@ export class UserService {
         return this.prisma.user.findMany();
     }
     async createUser(body: CreateUserDTO): Promise<User> {
-        const existingUser = await this.prisma.user.findUnique({ where: { email: body.email } });
+        body.password = await this.hashPassword(body.password);
+        const existingUserEmail = await this.prisma.user.findUnique({ where: { email: body.email } });
 
-        if (existingUser) {
+        if (existingUserEmail) {
             throw new ConflictException(`Email is already registered!`);
         }
         return this.prisma.user.create({ data: body });
@@ -26,12 +28,15 @@ export class UserService {
         return user;
     }
     async updateUser(id: number, body: UpdateUserDTO) {
-        this.isIdExists(id);
+        await this.isIdExists(id);
 
+        if (body.password) {
+            body.password = await this.hashPassword(body.password);
+        }
         return this.prisma.user.update({ where: { id }, data: body });
     }
     async deleteUser(id: number) {
-        this.isIdExists(id);
+        await this.isIdExists(id);
 
         return this.prisma.user.delete({ where: { id } });
     }
@@ -42,5 +47,9 @@ export class UserService {
             throw new NotFoundException(`User not found`);
         }
         return user;
+    }
+
+    private async hashPassword(password: string) {
+        return await bcrypt.hash(password, 10);
     }
 }
