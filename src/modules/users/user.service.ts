@@ -9,7 +9,10 @@ export class UserService {
     createUser(body: any): Promise<User> {
         return this.prisma.user.create({ data: body });
     }
-    getUsers() {
-        return 'All users';
+    list() {
+        return this.prisma.user.findMany();
+    }
+    show(id: string) {
+        return this.prisma.user.findUnique({ where: { id: Number(id) } });
     }
 }
