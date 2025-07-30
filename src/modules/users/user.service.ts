@@ -15,4 +15,10 @@ export class UserService {
     show(id: string) {
         return this.prisma.user.findUnique({ where: { id: Number(id) } });
     }
+    updateUser(id: string, body: any) {
+        return this.prisma.user.update({
+            where: { id: Number(id) },
+            data: body
+        });
+    }
 }
