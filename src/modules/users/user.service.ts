@@ -9,7 +9,9 @@ import { userSelectFields } from "../prisma/utils/userSelectFields";
 
 @Injectable()
 export class UserService {
-    constructor(private readonly prisma: PrismaService) {}
+    constructor(
+        private readonly prisma: PrismaService, 
+    ) {}
 
     list() {
         return this.prisma.user.findMany({
