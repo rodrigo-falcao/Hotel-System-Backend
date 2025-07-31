@@ -7,6 +7,9 @@ import * as bcrypt from 'bcrypt';
 import { UserService } from "../users/user.service";
 import { CreateUserDTO } from "../users/domain/dto/createUser.dto";
 import { AuthRegisterDTO } from "./domain/dto/authRegister.dto";
+import { AuthResetPasswordDTO } from "./domain/dto/authResetPassword.dto";
+import { ValidationTokenDTO } from "./domain/dto/validateToken.dto";
+
 
 @Injectable()
 export class AuthService {
@@ -28,7 +31,8 @@ export class AuthService {
 
     async login({email, password}: AuthLoginDTO) {
         const user = await this.userService.findByEmail(email);
-        if (!user || (await bcrypt.compare(password, user.password))) {
+
+        if (!user || !(await bcrypt.compare(password, user.password))) {
             throw new UnauthorizedException('Invalid email or password');
         }   
         return this.generateJwtToken(user);
@@ -43,6 +47,32 @@ export class AuthService {
         };
         const user = await this.userService.createUser(newUser);
         return this.generateJwtToken(user);
+    }
+
+
+    async resetPassword({ token, password }: AuthResetPasswordDTO) {
+        const {valid, decoded } = await this.validateToken(token);
+
+        if (!valid || !decoded) {
+            throw new UnauthorizedException('Invalid or expired token');
+        }
+
+        const user = await this.userService.updateUser(Number(decoded.sub), { password });
+        return this.generateJwtToken(user);
+    }
+
+    private async validateToken(token: string): Promise<ValidationTokenDTO> {
+        try {
+            const decoded = await this.jwtService.verifyAsync(token, {
+                secret: process.env.JWT_SECRET,
+                issuer: 'dnc_hotel',
+                audience: 'users',
+            });
+            return { valid: true, decoded };
+        } catch (error) {
+            const err = error as Error;
+            return { valid: false, message: err.message };
+        }
     }
 }
 

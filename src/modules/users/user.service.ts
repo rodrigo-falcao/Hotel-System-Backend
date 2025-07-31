@@ -55,8 +55,7 @@ export class UserService {
 
     async findByEmail(email: string): Promise<User | null> {
         return this.prisma.user.findUnique({
-            where: { email },
-            select: userSelectFields
+            where: { email }
         });
     }
 
