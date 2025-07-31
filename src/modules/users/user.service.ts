@@ -53,6 +53,13 @@ export class UserService {
         return this.prisma.user.delete({ where: { id } });
     }
 
+    async findByEmail(email: string): Promise<User | null> {
+        return this.prisma.user.findUnique({
+            where: { email },
+            select: userSelectFields
+        });
+    }
+
     private async isIdExists(id: number) {
         const user = await this.prisma.user.findUnique({ where: { id }, select: userSelectFields });
         if (!user) {
