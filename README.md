@@ -1,4 +1,4 @@
-# Dnc Hotel API  <img src="https://nestjs.com/img/logo-small.svg" width="32" alt="Nest Logo" style="vertical-align:middle;" />
+# Hotel System API  <img src="https://nestjs.com/img/logo-small.svg" width="32" alt="Nest Logo" style="vertical-align:middle;" />
 
 ![Status](https://img.shields.io/badge/Status-Em%20Andamento-yellow)
 ![NestJS](https://img.shields.io/badge/NestJS-10.0.0-red?logo=nestjs)
@@ -13,7 +13,7 @@
 
 ---
 
-API para gerenciamento de usuários e autenticação do sistema DncHotel, construída com NestJS, Prisma e JWT.
+API para gerenciamento de usuários e autenticação do sistema Dnc-Hotel, construída com NestJS, Prisma e JWT.
 
 (Projeto em andamento)
 
