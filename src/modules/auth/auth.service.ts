@@ -19,10 +19,10 @@ export class AuthService {
         private readonly userService: UserService
     ) {}
 
-    generateJwtToken(user: User) {
+    generateJwtToken(user: User, expiresIn: string = '1h') {
         const payload = { sub: user.id, name: user.name };
         const options = { 
-            expiresIn: '1h',
+            expiresIn: expiresIn,
             issuer: 'dnc_hotel',
             audience: 'users',
         };
@@ -49,7 +49,6 @@ export class AuthService {
         return this.generateJwtToken(user);
     }
 
-
     async resetPassword({ token, password }: AuthResetPasswordDTO) {
         const {valid, decoded } = await this.validateToken(token);
 
@@ -59,6 +58,16 @@ export class AuthService {
 
         const user = await this.userService.updateUser(Number(decoded.sub), { password });
         return this.generateJwtToken(user);
+    }
+
+    async forgotPassword(email: string) {
+        const user = await this.userService.findByEmail(email);
+        if (!user) {
+            throw new UnauthorizedException('User not found');
+        }
+        const token = this.generateJwtToken(user, '30m');
+
+        return token;
     }
 
     private async validateToken(token: string): Promise<ValidationTokenDTO> {

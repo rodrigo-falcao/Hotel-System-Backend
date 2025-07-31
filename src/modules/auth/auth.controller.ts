@@ -3,6 +3,7 @@ import { AuthService } from "./auth.service";
 import { Body, Controller, HttpCode, Patch, Post } from "@nestjs/common";
 import { AuthRegisterDTO } from "./domain/dto/authRegister.dto";
 import { AuthResetPasswordDTO } from "./domain/dto/authResetPassword.dto";
+import { AuthForgotPasswordDTO } from "./domain/dto/authForgotPassword.dto";
 
 @Controller('auth')
 export class AuthController {
@@ -24,5 +25,11 @@ export class AuthController {
     @HttpCode(200)  
     resetPassword(@Body() {token, password}: AuthResetPasswordDTO) {
         return this.authService.resetPassword({token, password});
+    }
+
+    @Post('forgot-password')
+    @HttpCode(200)
+    forgotPassword(@Body() {email }: AuthForgotPasswordDTO) {
+        return this.authService.forgotPassword(email);
     }
 }
