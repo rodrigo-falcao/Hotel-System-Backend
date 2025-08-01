@@ -9,9 +9,9 @@ import { Role, User as UserType } from "@prisma/client";
 import { Roles } from "src/shared/decorators/roles.decorator";
 import { RoleGuard } from "src/shared/guards/role.guard";
 import { UserMathGuard } from "src/shared/guards/user.guard";
+import { ThrottlerGuard } from "@nestjs/throttler";
 
-
-@UseGuards(AuthGuard, RoleGuard)
+@UseGuards(AuthGuard, RoleGuard, ThrottlerGuard)
 @Controller('users')
 export class UserController {
     constructor(private userService: UserService) {}
