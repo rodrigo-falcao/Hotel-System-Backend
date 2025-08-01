@@ -5,10 +5,12 @@ import { UpdateUserDTO } from "./domain/dto/updateUser.dto";
 import { ParamId } from "src/shared/decorators/paramId.decorator";
 import { AuthGuard } from "src/shared/guards/auth.guard";
 import { User } from "src/shared/decorators/user.decorator";
-import { User as UserType } from "@prisma/client";
+import { Role, User as UserType } from "@prisma/client";
+import { Roles } from "src/shared/decorators/roles.decorator";
+import { RoleGuard } from "src/shared/guards/role.guard";
 
 
-@UseGuards(AuthGuard)
+@UseGuards(AuthGuard, RoleGuard)
 @Controller('users')
 export class UserController {
     constructor(private userService: UserService) {}
@@ -24,6 +26,7 @@ export class UserController {
         return this.userService.show(id);
     }
 
+    @Roles(Role.ADMIN)
     @Post()
     createUser(@Body() body: CreateUserDTO) {
         return this.userService.createUser(body);
