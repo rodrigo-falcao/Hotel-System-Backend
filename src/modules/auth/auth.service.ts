@@ -70,7 +70,7 @@ export class AuthService {
         return token;
     }
 
-    private async validateToken(token: string): Promise<ValidationTokenDTO> {
+    async validateToken(token: string): Promise<ValidationTokenDTO> {
         try {
             const decoded = await this.jwtService.verifyAsync(token, {
                 secret: process.env.JWT_SECRET,
