@@ -67,6 +67,9 @@ export class AuthService {
         }
         const token = this.generateJwtToken(user, '30m');
 
+        // Here you would typically send the token to the user's email
+        // For example, using a mail service to send the token link
+
         return token;
     }
 
