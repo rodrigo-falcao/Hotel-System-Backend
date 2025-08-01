@@ -5,6 +5,8 @@ import { CreateUserDTO } from "./domain/dto/createUser.dto";
 import { UpdateUserDTO } from "./domain/dto/updateUser.dto";
 import * as bcrypt from 'bcrypt';
 import { userSelectFields } from "../prisma/utils/userSelectFields";
+import { join, resolve } from "path";
+import { stat, unlink } from "fs/promises";
 
 
 @Injectable()
@@ -58,6 +60,26 @@ export class UserService {
             where: { email }
         });
     }
+
+    async uploadAvatar(id: number, avatarFilename: string) {
+        const user = await this.isIdExists(id);
+        const directory = resolve (__dirname, '..', '..', '..', 'uploads');
+
+        console.log('Valor atual de user.avatar:', user.avatar);
+        if (user.avatar) {
+        const userAvatarFilePath = join(directory, user.avatar);
+
+        try {
+            await stat(userAvatarFilePath);
+            await unlink(userAvatarFilePath);
+        } catch {
+            // Se não existir, ignora o erro
+        }
+    }
+        const userUpdated = await this.updateUser(id, {avatar: avatarFilename});
+
+        return userUpdated;
+    } 
 
     private async isIdExists(id: number) {
         const user = await this.prisma.user.findUnique({ where: { id }, select: userSelectFields });
