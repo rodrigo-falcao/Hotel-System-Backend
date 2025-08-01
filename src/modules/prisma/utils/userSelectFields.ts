@@ -6,4 +6,5 @@ export const userSelectFields = {
     role: true,
     createdAt: true,
     updatedAt: false,
+    avatar: true, 
 }

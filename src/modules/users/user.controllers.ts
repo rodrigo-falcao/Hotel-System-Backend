@@ -1,15 +1,16 @@
-import { Body, Controller, Delete, Get, Patch, Post, UseGuards } from "@nestjs/common";
-import { UserService } from "./user.service";
-import { CreateUserDTO } from "./domain/dto/createUser.dto";
-import { UpdateUserDTO } from "./domain/dto/updateUser.dto";
-import { ParamId } from "src/shared/decorators/paramId.decorator";
 import { AuthGuard } from "src/shared/guards/auth.guard";
-import { User } from "src/shared/decorators/user.decorator";
+import { Body, Controller, Delete, Get, Patch, Post, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { CreateUserDTO } from "./domain/dto/createUser.dto";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { ParamId } from "src/shared/decorators/paramId.decorator";
 import { Role, User as UserType } from "@prisma/client";
-import { Roles } from "src/shared/decorators/roles.decorator";
 import { RoleGuard } from "src/shared/guards/role.guard";
-import { UserMathGuard } from "src/shared/guards/user.guard";
+import { Roles } from "src/shared/decorators/roles.decorator";
 import { ThrottlerGuard } from "@nestjs/throttler";
+import { UpdateUserDTO } from "./domain/dto/updateUser.dto";
+import { User } from "src/shared/decorators/user.decorator";
+import { UserMathGuard } from "src/shared/guards/user.guard";
+import { UserService } from "./user.service";
 
 @UseGuards(AuthGuard, RoleGuard, ThrottlerGuard)
 @Controller('users')
@@ -43,5 +44,13 @@ export class UserController {
     @Delete(':id')
     deleteUser(@ParamId() id: number) {
         return this.userService.deleteUser(id);
+    }
+
+    @UseInterceptors(FileInterceptor('avatar'))
+    @Post('avatar')
+    uploadAvatar(@UploadedFile() avatar: Express.Multer.File) {
+        console.log(avatar);
+        return true
+        // return this.userService.uploadAvatar(user);
     }
 }

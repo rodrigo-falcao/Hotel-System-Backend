@@ -8,4 +8,5 @@ export class AuthResetPasswordDTO {
     @IsJWT()
     @IsNotEmpty()
     token: string;
+    
 }
