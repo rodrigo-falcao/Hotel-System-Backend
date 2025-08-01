@@ -1,4 +1,4 @@
-import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { PrismaService } from "../prisma/prisma.service";
 import { User } from "@prisma/client";
 import { CreateUserDTO } from "./domain/dto/createUser.dto";
@@ -19,12 +19,12 @@ export class UserService {
         });
     }
     async createUser(body: CreateUserDTO): Promise<User> {
-        body.password = await this.hashPassword(body.password);
-        const existingUserEmail = await this.prisma.user.findUnique({ where: { email: body.email } });
-
-        if (existingUserEmail) {
-            throw new ConflictException(`Email is already registered!`);
+        const user = await this.findByEmail(body.email);
+        if (user) {
+            throw new BadRequestException(`Email is already registered!`);
         }
+        
+        body.password = await this.hashPassword(body.password);
         return await this.prisma.user.create({ 
             data: body, 
             select: userSelectFields

@@ -8,6 +8,7 @@ import { User } from "src/shared/decorators/user.decorator";
 import { Role, User as UserType } from "@prisma/client";
 import { Roles } from "src/shared/decorators/roles.decorator";
 import { RoleGuard } from "src/shared/guards/role.guard";
+import { UserMathGuard } from "src/shared/guards/user.guard";
 
 
 @UseGuards(AuthGuard, RoleGuard)
@@ -26,17 +27,19 @@ export class UserController {
         return this.userService.show(id);
     }
 
-    @Roles(Role.ADMIN)
+    @Roles(Role.ADMIN, Role.USER)
     @Post()
     createUser(@Body() body: CreateUserDTO) {
         return this.userService.createUser(body);
     }
 
+    @UseGuards(UserMathGuard)
     @Patch(':id')
     updateUser(@ParamId() id: number, @Body() body: UpdateUserDTO) {
         return this.userService.updateUser(id, body);
     }
 
+    @UseGuards(UserMathGuard)
     @Delete(':id')
     deleteUser(@ParamId() id: number) {
         return this.userService.deleteUser(id);
