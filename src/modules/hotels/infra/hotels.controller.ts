@@ -1,12 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { AuthGuard } from 'src/shared/guards/auth.guard';
+import { Controller, Get, Post, Body, Patch, Delete, Query, UseGuards } from '@nestjs/common';
 import { CreateHotelDto } from '../domain/dto/create-hotel.dto';
 import { CreateHotelsService } from '../services/createHotel.service';
 import { FindAllHotelsService } from '../services/findAllHotel.service';
+import { FindByNameHotelsService } from '../services/findbyName.service';
+import { FindByOwnerHotelsService } from '../services/findbyOwner.service';
 import { FindOneHotelsService } from '../services/findOneHotel.service';
+import { ParamId } from 'src/shared/decorators/paramId.decorator';
 import { RemoveHotelsService } from '../services/removeHotel.service';
+import { RoleGuard } from 'src/shared/guards/role.guard';
 import { UpdateHotelDto } from '../domain/dto/update-hotel.dto';
 import { UpdateHotelsService } from '../services/updateHotel.service';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { Role } from '@prisma/client';
+import { OwnerHotelGuard } from 'src/shared/guards/ownerHotel.guard';
+import { User } from 'src/shared/decorators/user.decorator';
 
+@UseGuards(AuthGuard, RoleGuard)
 @Controller('hotels')
 export class HotelsController {
   constructor(
@@ -14,31 +24,52 @@ export class HotelsController {
     private readonly findAllHotelsService: FindAllHotelsService,
     private readonly findOneHotelsService: FindOneHotelsService,
     private readonly updateHotelsService: UpdateHotelsService,
-    private readonly removeHotelsService: RemoveHotelsService
+    private readonly removeHotelsService: RemoveHotelsService,
+    private readonly findByNameHotelsService: FindByNameHotelsService,
+    private readonly findByOwnerHotelsService: FindByOwnerHotelsService,
   ) {}
 
+  @Roles(Role.ADMIN)
   @Post()
-  create(@Body() createHotelDto: CreateHotelDto) {
-    return this.createHotelService.execute(createHotelDto);
+  create(@User('id') id: number, @Body() createHotelDto: CreateHotelDto) {
+    return this.createHotelService.execute(createHotelDto, id);
   }
 
+  @Roles(Role.ADMIN, Role.USER)
   @Get()
   findAll() {
     return this.findAllHotelsService.findAll();
   }
+  
+  @Roles(Role.ADMIN, Role.USER)
+  @Get('name')
+  findByName(@Query('name') name: string) {
+    return this.findByNameHotelsService.findByName(name);
+  }
+  
+  @Roles(Role.ADMIN)
+  @Get('owner')
+  findByOwner(@User('Id') id: number) {
+    return this.findByOwnerHotelsService.findByOwner(id);
+  }
 
+  @Roles(Role.ADMIN, Role.USER)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.findOneHotelsService.findOne(+id);
+  findOne(@ParamId('id') id: number) {
+    return this.findOneHotelsService.findOne(id);
   }
 
+  @UseGuards(OwnerHotelGuard)
+  @Roles(Role.ADMIN)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateHotelDto: UpdateHotelDto) {
-    return this.updateHotelsService.update(+id, updateHotelDto);
+  update(@ParamId('id') id: number, @Body() updateHotelDto: UpdateHotelDto) {
+    return this.updateHotelsService.findById(id, updateHotelDto);
   }
 
+  @UseGuards(OwnerHotelGuard)
+  @Roles(Role.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.removeHotelsService.remove(+id);
+  remove(@ParamId('id') id: number) {
+    return this.removeHotelsService.remove(id);
   }
 }

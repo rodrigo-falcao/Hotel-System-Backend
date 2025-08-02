@@ -1,12 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { HOTEL_REPOSITORY_TOKEN } from '../utils/repositoriesTokens';
+import { IHotelRepository } from '../domain/repositories/IHotel.repositories';
 import { UpdateHotelDto } from '../domain/dto/update-hotel.dto';
-import { HotelsRepository } from '../infra/hotels.repository';
 
 @Injectable()
 export class UpdateHotelsService {
-  constructor(private readonly hotelsRepository: HotelsRepository) {}
+  constructor(
+    @Inject(HOTEL_REPOSITORY_TOKEN)
+    private readonly hotelRepository: IHotelRepository,
+  ) {}
 
-  update(id: number, updateHotelDto: UpdateHotelDto) {
-    return this.hotelsRepository.updateHotel(id, updateHotelDto);
+  async findById(id: number, updateHotelDto: UpdateHotelDto) {
+    return await this.hotelRepository.updateHotel(id, updateHotelDto);
   }
 }
