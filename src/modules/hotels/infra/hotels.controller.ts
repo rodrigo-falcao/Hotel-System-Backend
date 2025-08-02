@@ -49,7 +49,7 @@ export class HotelsController {
   
   @Roles(Role.ADMIN)
   @Get('owner')
-  findByOwner(@User('Id') id: number) {
+  findByOwner(@User('id') id: number) {
     return this.findByOwnerHotelsService.findByOwner(id);
   }
 

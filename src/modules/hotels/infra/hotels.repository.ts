@@ -18,8 +18,8 @@ export class HotelsRepository implements IHotelRepository {
         return this.prisma.hotel.findUnique({ where: { id } });
     }
     
-    async findHotelByName(name: string): Promise<Hotel | null> {
-        return this.prisma.hotel.findFirst({ where: { name } });
+    async findHotelByName(name: string): Promise<Hotel[] | null> {
+        return this.prisma.hotel.findMany({ where: { name: { contains: name, mode: 'insensitive' } } });
     }
 
     findHotels(): Promise<Hotel[]> {
