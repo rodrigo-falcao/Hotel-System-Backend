@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { HotelsService } from './hotels.service';
-import { CreateHotelDto } from './dto/create-hotel.dto';
-import { UpdateHotelDto } from './dto/update-hotel.dto';
+import { CreateHotelDto } from './domain/dto/create-hotel.dto';
+import { UpdateHotelDto } from './domain/dto/update-hotel.dto';
 
 @Controller('hotels')
 export class HotelsController {
