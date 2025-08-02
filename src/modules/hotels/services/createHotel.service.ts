@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { CreateHotelDto } from './domain/dto/create-hotel.dto';
-import { UpdateHotelDto } from './domain/dto/update-hotel.dto';
+import { CreateHotelDto } from '../domain/dto/create-hotel.dto';
+import { UpdateHotelDto } from '../domain/dto/update-hotel.dto';
 
 @Injectable()
 export class HotelsService {
