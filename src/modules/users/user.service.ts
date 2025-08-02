@@ -1,12 +1,12 @@
 import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
-import { PrismaService } from "../prisma/prisma.service";
-import { User } from "@prisma/client";
 import { CreateUserDTO } from "./domain/dto/createUser.dto";
-import { UpdateUserDTO } from "./domain/dto/updateUser.dto";
-import * as bcrypt from 'bcrypt';
-import { userSelectFields } from "../prisma/utils/userSelectFields";
 import { join, resolve } from "path";
+import { PrismaService } from "../prisma/prisma.service";
 import { stat, unlink } from "fs/promises";
+import { UpdateUserDTO } from "./domain/dto/updateUser.dto";
+import { User } from "@prisma/client";
+import { userSelectFields } from "../prisma/utils/userSelectFields";
+import * as bcrypt from 'bcrypt';
 
 
 @Injectable()
@@ -65,18 +65,16 @@ export class UserService {
         const user = await this.isIdExists(id);
         const directory = resolve (__dirname, '..', '..', '..', 'uploads');
 
-        console.log('Valor atual de user.avatar:', user.avatar);
         if (user.avatar) {
-        const userAvatarFilePath = join(directory, user.avatar);
-
-        try {
-            await stat(userAvatarFilePath);
-            await unlink(userAvatarFilePath);
-        } catch {
-            // Se não existir, ignora o erro
+            const userAvatarFilePath = join(directory, user.avatar);
+            try {
+                await stat(userAvatarFilePath);
+                await unlink(userAvatarFilePath);
+            } catch {
+                // Arquivo não existe, ignora o erro
+            }
         }
-    }
-        const userUpdated = await this.updateUser(id, {avatar: avatarFilename});
+        const userUpdated = await this.updateUser(id, { avatar: avatarFilename });
 
         return userUpdated;
     } 
