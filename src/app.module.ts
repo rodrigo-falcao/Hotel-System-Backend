@@ -3,6 +3,7 @@ import { PrismaModule } from './modules/prisma/prisma.module';
 import { UserModule } from './modules/users/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { HotelsModule } from './modules/hotels/hotels.module';
 
 @Module({
   imports: [
@@ -12,7 +13,8 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     ThrottlerModule.forRoot([{
       ttl: 5000,
       limit: 3,
-    }])],
+    }]),
+    HotelsModule],
   providers: [
     {
       provide: 'APP_GUARD',
