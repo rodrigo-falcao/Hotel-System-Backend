@@ -1,5 +1,5 @@
 import { AuthGuard } from 'src/shared/guards/auth.guard';
-import { Controller, Get, Post, Body, Patch, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Delete, Query, UseGuards, Param, UploadedFile, MaxFileSizeValidator, ParseFilePipe, BadRequestException, UseInterceptors } from '@nestjs/common';
 import { CreateHotelDto } from '../domain/dto/create-hotel.dto';
 import { CreateHotelsService } from '../services/createHotel.service';
 import { FindAllHotelsService } from '../services/findAllHotel.service';
@@ -15,6 +15,9 @@ import { Roles } from 'src/shared/decorators/roles.decorator';
 import { Role } from '@prisma/client';
 import { OwnerHotelGuard } from 'src/shared/guards/ownerHotel.guard';
 import { User } from 'src/shared/decorators/user.decorator';
+import { UploadImageHotelService } from '../services/uploadImageHotel.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FileValidationInterceptor } from 'src/shared/interceptors/filevalidation.interceptor';
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('hotels')
@@ -27,6 +30,7 @@ export class HotelsController {
     private readonly removeHotelsService: RemoveHotelsService,
     private readonly findByNameHotelsService: FindByNameHotelsService,
     private readonly findByOwnerHotelsService: FindByOwnerHotelsService,
+    private readonly uploadImageHotelService: UploadImageHotelService,
   ) {}
 
   @Roles(Role.ADMIN)
@@ -57,6 +61,26 @@ export class HotelsController {
   @Get(':id')
   findOne(@ParamId('id') id: number) {
     return this.findOneHotelsService.findOne(id);
+  }
+
+  @UseInterceptors(FileInterceptor('image'), FileValidationInterceptor)
+  @Patch('image/:hotelId')
+  uploadImage(
+    @Param('hotelId') id: string, 
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 50 * 1024 * 1024 }), 
+        ],
+      })
+    ) image: Express.Multer.File) {
+    if (!image) {
+        throw new BadRequestException('Arquivo não enviado!');
+    }
+    if (!image.mimetype.startsWith('image/')) {
+        throw new BadRequestException('O arquivo enviado não é uma imagem!');
+    }
+    return this.uploadImageHotelService.findById(id, image.filename);
   }
 
   @UseGuards(OwnerHotelGuard)
