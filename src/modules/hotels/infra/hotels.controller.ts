@@ -37,8 +37,8 @@ export class HotelsController {
 
   @Roles(Role.ADMIN, Role.USER)
   @Get()
-  findAll() {
-    return this.findAllHotelsService.findAll();
+  findAll(@Query('page') page: string = '1', @Query('limit') limit: string = '10') {
+    return this.findAllHotelsService.findAll(Number(page), Number(limit));
   }
   
   @Roles(Role.ADMIN, Role.USER)
