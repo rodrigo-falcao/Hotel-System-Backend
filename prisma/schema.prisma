@@ -20,13 +20,12 @@ model User {
   role      Role     @default(USER)
   avatar    String?
   hotels    Hotel[]  
+  reservations Reservation[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   @@map("users")
 }
-
-
 
 model Hotel {
   id          Int      @id @default(autoincrement())
@@ -37,8 +36,25 @@ model Hotel {
   price       Float
   ownerId     Int
   owner       User     @relation(fields: [ownerId], references: [id])
+  reservations Reservation[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@map("hotels")
+}
+
+model Reservation {
+  id          Int      @id @default(autoincrement())
+  userId      Int 
+  user        User      @relation(fields: [userId], references: [id])
+  hotelId     Int
+  hotel       Hotel     @relation(fields: [hotelId], references: [id])
+  checkIn     DateTime
+  checkOut    DateTime
+  total       Float
+  approved    Boolean   @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("reservations")
 }
