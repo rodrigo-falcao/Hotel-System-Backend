@@ -4,6 +4,7 @@ import { UserModule } from './modules/users/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { HotelsModule } from './modules/hotels/hotels.module';
+import { ReservationsModule } from './modules/reservations/reservations.module';
 
 @Module({
   imports: [
@@ -14,7 +15,8 @@ import { HotelsModule } from './modules/hotels/hotels.module';
       ttl: 5000,
       limit: 3,
     }]),
-    HotelsModule],
+    HotelsModule,
+    ReservationsModule],
   providers: [
     {
       provide: 'APP_GUARD',
