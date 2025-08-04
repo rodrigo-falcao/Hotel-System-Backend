@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { IHotelRepository } from '../domain/repositories/IHotel.repositories';
-import { HOTEL_REPOSITORY_TOKEN } from '../utils/repositoriesTokens';
+import { REPOSITORY_TOKEN_HOTEL } from '../utils/repositoriesTokens';
 
 @Injectable()
 export class FindByOwnerHotelsService {
     constructor(
-        @Inject(HOTEL_REPOSITORY_TOKEN)
+        @Inject(REPOSITORY_TOKEN_HOTEL)
         private readonly hotelRepository: IHotelRepository,
     ) {}
 

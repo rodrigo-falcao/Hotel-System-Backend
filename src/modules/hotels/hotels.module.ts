@@ -4,7 +4,7 @@ import { FindAllHotelsService } from './services/findAllHotel.service';
 import { FindByNameHotelsService } from './services/findbyName.service';
 import { FindByOwnerHotelsService } from './services/findbyOwner.service';
 import { FindOneHotelsService } from './services/findOneHotel.service';
-import { HOTEL_REPOSITORY_TOKEN } from './utils/repositoriesTokens';
+import { REPOSITORY_TOKEN_HOTEL } from './utils/repositoriesTokens';
 import { HotelsController } from './infra/hotels.controller';
 import { HotelsRepository } from './infra/hotels.repository';
 import { Module } from '@nestjs/common';
@@ -43,7 +43,7 @@ import { UploadImageHotelService } from './services/uploadImageHotel.service';
     HotelsRepository, 
     UploadImageHotelService,
     {
-      provide: HOTEL_REPOSITORY_TOKEN,
+      provide: REPOSITORY_TOKEN_HOTEL,
       useClass: HotelsRepository,
     }
   ],
