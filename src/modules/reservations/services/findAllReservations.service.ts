@@ -10,6 +10,6 @@ export class FindAllReservationsService {
     ) {}
 
     async findAll() {
-        return this.reservationRepository.findAll();
+        return await this.reservationRepository.findAll();
     }
 }
