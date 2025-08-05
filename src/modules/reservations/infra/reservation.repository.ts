@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { IReservationRepository } from "../domain/repositories/IReservation.repository";
 import { PrismaService } from "src/modules/prisma/prisma.service";
-import { Reservation } from "@prisma/client";
+import { Reservation, ReservationStatus } from "@prisma/client";
 
 @Injectable()
 export class ReservationRepository implements IReservationRepository{
@@ -18,5 +18,11 @@ export class ReservationRepository implements IReservationRepository{
     }
     findByUser(userId: number): Promise<Reservation[]> {
         return this.prisma.reservation.findMany({ where: { userId } });
+    }
+    updateStatus(id: number, status: ReservationStatus): Promise<Reservation> {
+        return this.prisma.reservation.update({
+            where: { id },
+            data: { status }
+        });
     }
 }
