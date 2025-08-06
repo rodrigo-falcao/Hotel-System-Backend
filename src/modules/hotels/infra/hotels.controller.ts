@@ -1,23 +1,38 @@
 import { AuthGuard } from 'src/shared/guards/auth.guard';
-import { Controller, Get, Post, Body, Patch, Delete, Query, UseGuards, Param, UploadedFile, MaxFileSizeValidator, ParseFilePipe, BadRequestException, UseInterceptors } from '@nestjs/common';
+import { 
+  Controller, 
+  Get, 
+  Post, 
+  Body, 
+  Patch, 
+  Delete, 
+  Query, 
+  UseGuards, 
+  Param, 
+  UploadedFile, 
+  MaxFileSizeValidator, 
+  ParseFilePipe, 
+  BadRequestException, 
+  UseInterceptors 
+} from '@nestjs/common';
 import { CreateHotelDto } from '../domain/dto/create-hotel.dto';
 import { CreateHotelsService } from '../services/createHotel.service';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { FileValidationInterceptor } from 'src/shared/interceptors/filevalidation.interceptor';
 import { FindAllHotelsService } from '../services/findAllHotel.service';
 import { FindByNameHotelsService } from '../services/findbyName.service';
 import { FindByOwnerHotelsService } from '../services/findbyOwner.service';
 import { FindOneHotelsService } from '../services/findOneHotel.service';
+import { OwnerHotelGuard } from 'src/shared/guards/ownerHotel.guard';
 import { ParamId } from 'src/shared/decorators/paramId.decorator';
 import { RemoveHotelsService } from '../services/removeHotel.service';
+import { Role } from '@prisma/client';
 import { RoleGuard } from 'src/shared/guards/role.guard';
+import { Roles } from 'src/shared/decorators/roles.decorator';
 import { UpdateHotelDto } from '../domain/dto/update-hotel.dto';
 import { UpdateHotelsService } from '../services/updateHotel.service';
-import { Roles } from 'src/shared/decorators/roles.decorator';
-import { Role } from '@prisma/client';
-import { OwnerHotelGuard } from 'src/shared/guards/ownerHotel.guard';
-import { User } from 'src/shared/decorators/user.decorator';
 import { UploadImageHotelService } from '../services/uploadImageHotel.service';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { FileValidationInterceptor } from 'src/shared/interceptors/filevalidation.interceptor';
+import { User } from 'src/shared/decorators/user.decorator';
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('hotels')
