@@ -11,7 +11,6 @@ import { ReservationStatus, Role } from '@prisma/client';
 import { UpdateStatusReservationService } from '../services/updateStatusReservation.service';
 import { RoleGuard } from 'src/shared/guards/role.guard';
 import { Roles } from 'src/shared/decorators/roles.decorator';
-// import { UpdateReservationDto } from '../domain/dto/update-reservation.dto';
 
 @UseGuards(AuthGuard, RoleGuard)
 @Controller('reservations')

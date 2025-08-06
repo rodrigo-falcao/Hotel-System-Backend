@@ -1,0 +1,1 @@
+export const REPOSITORY_HOTELKEY = 'find-all-hotels';
