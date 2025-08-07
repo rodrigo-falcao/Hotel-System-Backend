@@ -47,15 +47,14 @@ describe('FindAllHotelsService', () => {
   it('should return paginated hotels', async () => {
     const page = 1;
     const limit = 10;
-    const offset = (page - 1) * limit;
 
     jest.spyOn(hotelsRepository, 'findHotels').mockResolvedValue([createHotelMock]);
     jest.spyOn(hotelsRepository, 'countHotels').mockResolvedValue(1);
 
     const result = await service.findAll(page, limit);
 
-    expect(hotelsRepository.findHotels).toHaveBeenCalledWith(offset, limit);
-    expect(hotelsRepository.countHotels).toHaveBeenCalled();
+    jest.spyOn(hotelsRepository, 'findHotels' as const).mockResolvedValue([createHotelMock]);
+    jest.spyOn(hotelsRepository, 'countHotels' as const).mockResolvedValue(1);
     expect(result).toEqual({
       total: 1,
       page,

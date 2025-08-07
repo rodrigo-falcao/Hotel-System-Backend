@@ -46,6 +46,7 @@ describe('CreateHotelService', () => {
   it('should create a hotel successfully', async () => {
     const result = await service.execute(createHotelMock, userIdMock);
 
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     expect(hotelsRepository.createHotel).toHaveBeenCalledWith(createHotelMock, userIdMock);
     expect(result).toEqual(createHotelMock);
   });
