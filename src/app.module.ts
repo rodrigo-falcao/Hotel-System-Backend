@@ -14,7 +14,7 @@ import { ReservationsModule } from './modules/reservations/reservations.module';
     AuthModule,
     ThrottlerModule.forRoot([{
       ttl: 5000,
-      limit: 3,
+      limit: 40,
     }]),
     HotelsModule,
     ReservationsModule,
