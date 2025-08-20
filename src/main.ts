@@ -14,7 +14,6 @@ async function bootstrap() {
   });
   app.useGlobalInterceptors(new LoggingInterceptor());
 
-  // Adicione esta linha para servir arquivos estáticos da pasta uploads-hotel
   app.useStaticAssets(join(__dirname, '..', 'uploads-hotel'), {
     prefix: '/uploads-hotel/',
   });
